@@ -1,6 +1,6 @@
 class EnvironmentConfiguration:
 
-    def __init__(self, vertices_num: int, deadline: int, vertex: list, edges: list):
+    def __init__(self, vertices_num: int, deadline: float, vertex: list, edges: list):
         self.__vertices_num = vertices_num
         self.__deadline = deadline
         self.__vertex = vertex

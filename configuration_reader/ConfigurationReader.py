@@ -2,6 +2,7 @@ from typing import Optional
 
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.Edge import Edge
+from data_structures.State import State
 from data_structures.Vertex import Vertex
 from utils.StateUtils import StateUtils
 
@@ -56,7 +57,7 @@ class ConfigurationReader:
         if parts_length == 2:
             peoples_in_vertex = int(parts[1].replace("P", ""))
         name = parts[0].replace("#V", "")
-        return Vertex(name, peoples_in_vertex)
+        return Vertex(peoples_in_vertex, State(name))
 
 
 if __name__ == '__main__':

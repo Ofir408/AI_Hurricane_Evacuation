@@ -1,7 +1,10 @@
+from data_structures.State import State
+
+
 class Vertex:
-    def __init__(self, vertex_name: str, people_num: int, parent_vertex: 'Vertex' = None,
+    def __init__(self, people_num: int, state: State, parent_vertex: 'Vertex' = None,
                  depth: int = None, cost: int = None):
-        self.__vertex_name = vertex_name
+        self.__state = state
         self.__people_num = people_num
         self.__edges = []
         self.__parent_vertex = parent_vertex
@@ -21,7 +24,7 @@ class Vertex:
         self.__cost = cost
 
     def get_vertex_name(self):
-        return self.__vertex_name
+        return self.__state.get_current_vertex_name()
 
     def get_people_num(self):
         return self.__people_num

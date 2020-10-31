@@ -3,6 +3,7 @@ from typing import Optional
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.Edge import Edge
 from data_structures.Vertex import Vertex
+from utils.StateUtils import StateUtils
 
 
 class ConfigurationReader:
@@ -63,3 +64,5 @@ if __name__ == '__main__':
     configuration_reader = ConfigurationReader()
     config = configuration_reader.read_configuration(config_path)
     print("Done to read configuration")
+    print("Printing state:")
+    StateUtils.print_state(config.get_vertices_num(), config.get_deadline(), config.get_edges(), config.get_vertex())

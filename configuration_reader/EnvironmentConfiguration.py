@@ -1,9 +1,15 @@
+from typing import Dict
+
+from data_structures.Edge import Edge
+from data_structures.Vertex import Vertex
+
+
 class EnvironmentConfiguration:
 
-    def __init__(self, vertices_num: int, deadline: float, vertex: list, edges: list):
+    def __init__(self, vertices_num: int, deadline: float, vertex: Dict[str, Vertex], edges: Dict[str, Edge]):
         self.__vertices_num = vertices_num
         self.__deadline = deadline
-        self.__vertex = vertex
+        self.__vertexes = vertex
         self.__edges = edges
 
     def get_vertices_num(self):
@@ -12,8 +18,8 @@ class EnvironmentConfiguration:
     def get_deadline(self):
         return self.__deadline
 
-    def get_vertex(self):
-        return self.__vertex
+    def get_vertexes(self):
+        return self.__vertexes
 
     def get_edges(self):
         return self.__edges

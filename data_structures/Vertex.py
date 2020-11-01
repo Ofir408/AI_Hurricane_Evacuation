@@ -1,3 +1,5 @@
+from typing import List
+
 from data_structures.State import State
 
 
@@ -29,7 +31,7 @@ class Vertex:
     def get_people_num(self):
         return self.__people_num
 
-    def get_edges(self):
+    def get_edges(self) -> List[str]:
         return self.__edges
 
     def get_parent_vertex(self):

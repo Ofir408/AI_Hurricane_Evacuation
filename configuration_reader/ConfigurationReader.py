@@ -1,10 +1,9 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.Edge import Edge
 from data_structures.State import State
 from data_structures.Vertex import Vertex
-from utils.StateUtils import StateUtils
 
 
 class ConfigurationReader:
@@ -17,8 +16,8 @@ class ConfigurationReader:
             lines = [line.split(ConfigurationReader.COMMENT_SEPARATOR)[0].strip() for line in f if
                      line.strip()]  # removes comments & empty lines.
 
-        vertex = []
-        edges = []
+        vertexes_dict = {}
+        edges_dict = {}
         vertices_num = -1
         deadline = -1  # default values.
         for current_line in lines:
@@ -27,14 +26,20 @@ class ConfigurationReader:
             elif current_line.startswith("#D"):
                 deadline = float(current_line.split(ConfigurationReader.SPACE_SEPARATOR)[1])
             elif current_line.startswith("#V"):
-                vertex.append(ConfigurationReader.create_vertex(current_line))
+                name, vertex = ConfigurationReader.create_vertex(current_line)
+                vertexes_dict[name] = vertex
             elif current_line.startswith("#E"):
-                edges.append(ConfigurationReader.create_edge(current_line))
-        return EnvironmentConfiguration(vertices_num, deadline, vertex, edges)
+                name, edge = ConfigurationReader.create_edge(current_line)
+                edges_dict[name] = edge
+                # add the edge name to relevant vertexes
+                first_vertex, second_vertex = edge.get_vertex_names()
+                vertexes_dict[first_vertex].add_edge_name(edge.get_edge_name())
+                vertexes_dict[second_vertex].add_edge_name(edge.get_edge_name())
+        return EnvironmentConfiguration(vertices_num, deadline, vertexes_dict, edges_dict)
 
     @staticmethod
     # Example input: #E1 1 2 W1
-    def create_edge(input_line: str) -> Optional[Edge]:
+    def create_edge(input_line: str) -> Optional[Tuple[str, Edge]]:
         parts = input_line.split(ConfigurationReader.SPACE_SEPARATOR)
         if len(parts) != 4:
             print(f'input line: {input_line} is invalid. Correct format: #E1 1 2 W1')
@@ -43,11 +48,11 @@ class ConfigurationReader:
         first_vertex = parts[1]
         second_vertex = parts[2]
         weight = int(parts[3].replace("W", ""))
-        return Edge(name, weight, (first_vertex, second_vertex))
+        return name, Edge(name, weight, (first_vertex, second_vertex))
 
     @staticmethod
     # Example input: #V4 P2 or #V4
-    def create_vertex(input_line: str) -> Optional[Vertex]:
+    def create_vertex(input_line: str) -> Optional[Tuple[str, Vertex]]:
         parts = input_line.split(ConfigurationReader.SPACE_SEPARATOR)
         parts_length = len(parts)
         peoples_in_vertex = 0
@@ -57,13 +62,4 @@ class ConfigurationReader:
         if parts_length == 2:
             peoples_in_vertex = int(parts[1].replace("P", ""))
         name = parts[0].replace("#V", "")
-        return Vertex(peoples_in_vertex, State(name))
-
-
-if __name__ == '__main__':
-    config_path = "C:/Users/Ofir/PycharmProjects/AI_Hurricane_Evacuation/initial_configurations/example.ascii"
-    configuration_reader = ConfigurationReader()
-    config = configuration_reader.read_configuration(config_path)
-    print("Done to read configuration")
-    print("Printing state:")
-    StateUtils.print_state(config.get_vertices_num(), config.get_deadline(), config.get_edges(), config.get_vertex())
+        return name, Vertex(peoples_in_vertex, State(name))

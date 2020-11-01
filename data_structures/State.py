@@ -1,10 +1,10 @@
 class State:
     """
     Represent a state, contains:
-    1) vertex with people that the agent has to go through them, with binary flag (did we reach everyone or not)
+    1) names of vertexes with people that the agent has to go through them, with binary flag (did we reach everyone or not)
     2) current vertex name.
     """
-    def __init__(self, current_vertex_name, required_vertexes: dict = None):
+    def __init__(self, current_vertex_name: str, required_vertexes: dict = None):
         self.__required_vertexes = required_vertexes
         self.__current_vertex = current_vertex_name
 

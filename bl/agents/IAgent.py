@@ -5,6 +5,8 @@ from data_structures.Vertex import Vertex
 
 class IAgent(ABC):
 
+    _was_terminated = False
+
     @abstractmethod
     def get_action(self, percepts) -> Vertex:
         """
@@ -14,3 +16,6 @@ class IAgent(ABC):
         :return: the next Vertex
         """
         pass
+
+    def was_terminated(self):
+        return self._was_terminated

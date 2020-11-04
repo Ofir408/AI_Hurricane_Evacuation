@@ -1,3 +1,4 @@
+import copy
 from typing import List, Dict
 
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
@@ -16,7 +17,7 @@ class EnvironmentUtils:
     _PERSONS_NUM_PREFIX = "P"
 
     @staticmethod
-    def print_state(env_config: EnvironmentConfiguration):
+    def print_environment(env_config: EnvironmentConfiguration):
         num_of_vertex = env_config.get_vertices_num()
         deadline = env_config.get_deadline()
         edges_dict = env_config.get_edges()
@@ -48,8 +49,32 @@ class EnvironmentUtils:
         required_vertexes = {}
         for vertex_name in env_config.get_vertexes().values():
             if vertex_name.get_people_num() > 0:
-                required_vertexes[vertex_name] = False
+                required_vertexes[vertex_name.get_vertex_name()] = False
         return required_vertexes
+
+    @staticmethod
+    def get_next_state(current_state: State, edge_name: str, env_config: EnvironmentConfiguration):
+        """
+
+        :param current_state: the current state
+        :param edge_name: edge name from current vertex to the next vertex
+        :param env_config: environment configuration
+        :return: The new vertex
+        """
+        current_vertex_name = current_state.get_current_vertex_name()
+        edges_dict = env_config.get_edges()
+        edge = edges_dict[edge_name]
+        first_vertex, sec_vertex = edge.get_vertex_names()
+        next_vertex_name = first_vertex if sec_vertex == current_vertex_name else sec_vertex
+        vertexes_dict = env_config.get_vertexes()
+        current_vertex = vertexes_dict[current_vertex_name]
+        next_vertex = vertexes_dict[next_vertex_name]
+        people_in_next_vertex = next_vertex.get_people_num()
+
+        # TODO: check if next_vertex really change env_config
+        next_vertex = Vertex(people_in_next_vertex, State(next_vertex_name), current_vertex.get_parent_vertex(),
+                             current_vertex.get_depth(), current_vertex.get_cost() + edge.get_weight())
+        return next_vertex.get_state()
 
     @staticmethod
     def __print_vertex(vertex: Vertex):

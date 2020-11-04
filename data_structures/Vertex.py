@@ -25,6 +25,9 @@ class Vertex:
     def set_cost(self, cost):
         self.__cost = cost
 
+    def get_state(self):
+        return self.__state
+
     def get_vertex_name(self):
         return self.__state.get_current_vertex_name()
 

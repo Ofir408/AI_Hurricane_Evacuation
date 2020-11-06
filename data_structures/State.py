@@ -9,8 +9,8 @@ class State:
     """
 
     def __init__(self, current_vertex_name: str, required_vertexes: Dict[str, int] = None):
-        self.__required_vertexes = required_vertexes
         self.__current_vertex = current_vertex_name
+        self.__required_vertexes = required_vertexes
 
     def set_visited_vertex(self, vertex_name: str):
         self.__required_vertexes[vertex_name] = True
@@ -23,6 +23,10 @@ class State:
 
     def get_current_vertex_name(self):
         return self.__current_vertex
+
+    def __eq__(self, other):
+        return self.__current_vertex == other.get_current_vertex_name() and \
+               self.__required_vertexes == other.get_required_vertexes()
 
     def __str__(self) -> str:
         return "Current State={0}. Required State={1}".format(self.__current_vertex, self.__required_vertexes)

@@ -4,12 +4,13 @@ from data_structures.State import State
 
 
 class Vertex:
-    def __init__(self, people_num: int, state: State, parent_vertex: 'Vertex' = None,
-                 depth: int = None, cost: int = None):
+    def __init__(self, people_num: int, state: State, edges: List[str], parent_vertex: 'Vertex' = None,
+                 action: str = None, depth: int = 0, cost: int = 0):
         self.__state = state
         self.__people_num = people_num
-        self.__edges = []
+        self.__edges = edges
         self.__parent_vertex = parent_vertex
+        self.__action = action
         self.__depth = depth
         self.__cost = cost
 
@@ -18,6 +19,9 @@ class Vertex:
 
     def set_parent_vertex(self, parent_vertex: 'Vertex'):
         self.__parent_vertex = parent_vertex
+
+    def set_action(self, action):
+        self.__action = action
 
     def set_depth(self, depth):
         self.__depth = depth
@@ -39,6 +43,9 @@ class Vertex:
 
     def get_parent_vertex(self):
         return self.__parent_vertex
+
+    def get_action(self):
+        return self.__action
 
     def get_depth(self):
         return self.__depth

@@ -27,7 +27,7 @@ class Simulator:
             for agent_num, agent in enumerate(agents):
                 percepts = self.__get_percepts(agent_num, states, env_conf)
                 action = agent.get_action(percepts)
-                new_state = update_func(action, states[agent_num], env_conf)
+                new_state = update_func(agent, action, states[agent_num], env_conf)
                 states[agent_num] = new_state
                 scores[agent_num] = performance_func(new_state, env_conf)
                 should_terminate = termination_func(states, agents)
@@ -36,8 +36,8 @@ class Simulator:
     def __get_percepts(self, agent_num, states, env_conf):
         return states[agent_num], env_conf
 
-    def update_func(self, action, current_state, env_conf):
-        new_state = EnvironmentUtils.get_next_state(current_state, action, env_conf)
+    def update_func(self, agent: IAgent, action: str, current_state: State, env_conf: EnvironmentConfiguration):
+        new_state = EnvironmentUtils.get_next_vertex(current_state, action, agent.step_cost, env_conf).get_state()
         new_state.set_visited_vertex(new_state.get_current_vertex_name())
         return new_state
 
@@ -49,5 +49,8 @@ class Simulator:
         should_terminate = len([agent for agent in agents if agent.was_terminated()]) == len(agents)
         if should_terminate:
             return True
-        traveled_states = set().union(StateUtils.get_traveled_vertexes(state) for state in states)
+        traveled_states = []
+        for state in states:
+            traveled_states += StateUtils.get_traveled_vertexes(state)
+        traveled_states = set().union(traveled_states)
         return len(traveled_states) == len(states[0].get_required_vertexes())

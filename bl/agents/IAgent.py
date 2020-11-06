@@ -1,19 +1,23 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from typing import Tuple
 
-from data_structures.Vertex import Vertex
+from bl.ICostCalculator import ICostCalculator
+from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
+from data_structures.State import State
 
 
-class IAgent(ABC):
+class IAgent(ICostCalculator):
 
-    _was_terminated = False
+    def __init__(self):
+        self._was_terminated = False
 
     @abstractmethod
-    def get_action(self, percepts) -> Vertex:
+    def get_action(self, percepts: Tuple[State, EnvironmentConfiguration]) -> str:
         """
         Should be implemented within each agent.
         :param percepts: percepts about the environment
                          composed from current State & EnvironmentConfiguration
-        :return: the next Vertex
+        :return: the next edge name
         """
         pass
 

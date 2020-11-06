@@ -62,4 +62,4 @@ class ConfigurationReader:
         if parts_length == 2:
             peoples_in_vertex = int(parts[1].replace("P", ""))
         name = parts[0].replace("#V", "")
-        return name, Vertex(peoples_in_vertex, State(name))
+        return name, Vertex(peoples_in_vertex, State(name), [])

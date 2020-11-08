@@ -25,8 +25,7 @@ class State:
         return self.__current_vertex
 
     def __eq__(self, other):
-        return self.__current_vertex == other.get_current_vertex_name() and \
-               self.__required_vertexes == other.get_required_vertexes()
+        return self.__current_vertex == other.get_current_vertex_name()
 
     def __str__(self) -> str:
         return "Current State={0}. Required State={1}".format(self.__current_vertex, self.__required_vertexes)

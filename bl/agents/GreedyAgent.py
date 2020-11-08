@@ -1,3 +1,5 @@
+import copy
+import sys
 from collections import deque
 from typing import Tuple
 
@@ -21,7 +23,8 @@ class GreedyAgent(IAgent):
             was_path_found = self.__init_path(percepts)
             if not was_path_found:
                 print("path not found")
-                return "not found"  # TODO: edit!!!!
+                self._was_terminated = True
+                return "NO-OPS"
         vertex = self.__get_next_vertex()
         return vertex.get_action()
 
@@ -40,13 +43,17 @@ class GreedyAgent(IAgent):
         if len(vertexes_for_visit) == 0:
             self._was_terminated = True  # path was not found
 
-        next_goal_vertex_name = next(iter(sorted(vertexes_for_visit.keys())))
-        next_goal_vertex = env_conf.get_vertexes()[next_goal_vertex_name]
-        print("searching solution...")
-        solution_vertex = self.__searcher.search((initial_state, next_goal_vertex.get_state(), env_conf))
-        vertexes_path, cost = self.__searcher.restore_solution(solution_vertex)
-        print("path:", [vertex.get_vertex_name() for vertex in vertexes_path], "cost: ", cost)
-
-        for vertex in vertexes_path:
+        # choose the shortest path to the next vertex with people to be rescued
+        env_conf_backup = copy.deepcopy(env_conf)
+        min_cost = sys.maxsize
+        shortest_path = []
+        for vertex_name in sorted(vertexes_for_visit.keys()):
+            vertex = env_conf_backup.get_vertexes()[vertex_name]
+            solution_vertex = self.__searcher.search((initial_state, vertex.get_state(), env_conf_backup), [])
+            if solution_vertex.get_cost() < min_cost:
+                min_cost = solution_vertex.get_cost()
+                shortest_path, _ = self.__searcher.restore_solution(solution_vertex)
+        print("path:", [vertex.get_vertex_name() for vertex in shortest_path], "cost: ", min_cost)
+        for vertex in shortest_path:
             self.__path_queue.append(vertex)
         return True  # path was found

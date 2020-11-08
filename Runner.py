@@ -1,6 +1,7 @@
 from bl.Simulator import Simulator
 from bl.agents.GreedyAgent import GreedyAgent
 from bl.agents.HumanAgent import HumanAgent
+from bl.agents.SaboteurAgent import SaboteurAgent
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.State import State
 from utils.EnvironmentUtils import EnvironmentUtils
@@ -9,7 +10,7 @@ from utils.EnvironmentUtils import EnvironmentUtils
 class Runner:
 
     def run(self, env_config: EnvironmentConfiguration):
-        agents = [HumanAgent(), GreedyAgent()]  # TODO: add more agents
+        agents = [HumanAgent(), GreedyAgent(), SaboteurAgent(env_config.get_vertices_num())]  # TODO: add more agents
         chosen_agents = []
         states = []
         for _ in range(1):

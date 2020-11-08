@@ -11,6 +11,7 @@ class EnvironmentConfiguration:
         self.__deadline = deadline
         self.__vertexes = vertex
         self.__edges = edges
+        self.__blocked_edges = []
 
     def get_vertices_num(self):
         return self.__vertices_num
@@ -23,3 +24,9 @@ class EnvironmentConfiguration:
 
     def get_edges(self):
         return self.__edges
+
+    def get_blocked_edges(self):
+        return self.__blocked_edges
+
+    def set_blocked_edge(self, edge_to_block):
+        return self.__blocked_edges.append(edge_to_block)

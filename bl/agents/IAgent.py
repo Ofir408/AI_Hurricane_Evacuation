@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Tuple
 
-from bl.ICostCalculator import ICostCalculator
+from bl.agents.ICostCalculator import ICostCalculator
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.State import State
 

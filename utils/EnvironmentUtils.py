@@ -53,38 +53,39 @@ class EnvironmentUtils:
         return required_vertexes
 
     @staticmethod
-    def get_next_vertex(current_state: State, edge_name: str, step_cost: Callable,
+    def get_next_vertex(current_vertex: Vertex, edge_name: str, step_cost: Callable,
                         env_config: EnvironmentConfiguration) -> Vertex:
         """
 
-        :param current_state: the current state
+        :param current_vertex: the current state
         :param edge_name: edge name from current vertex to the next vertex
         :param step_cost: function that receives parent_vertex, action, new_node and returns the step cost.
         :param env_config: environment configuration
         :return: The new vertex
         """
-        current_vertex_name = current_state.get_current_vertex_name()
+        current_state = current_vertex.get_state()
+        current_vertex_name = current_vertex.get_vertex_name()
         edges_dict = env_config.get_edges()
         vertexes_dict = env_config.get_vertexes()
-        current_vertex = vertexes_dict[current_vertex_name]
         if edge_name not in edges_dict:
             current_vertex.set_state(current_state)
             print("No operation for this agent")
-            current_vertex.set_cost(current_vertex.get_cost() + step_cost(current_vertex, Edge("", 0, ("", "")), current_vertex))
+            current_vertex.set_cost(
+                current_vertex.get_cost() + step_cost(current_vertex, Edge("", 0, ("", "")), current_vertex))
             return current_vertex  # No operation
 
         edge = edges_dict[edge_name]
         first_vertex, sec_vertex = edge.get_vertex_names()
         next_vertex_name = first_vertex if sec_vertex == current_vertex_name else sec_vertex
         next_vertex = vertexes_dict[next_vertex_name]
+
         people_in_next_vertex = next_vertex.get_people_num()
 
-        # TODO: check if next_vertex really change env_config
-        next_vertex = Vertex(people_in_next_vertex, State(next_vertex_name, current_state.get_required_vertexes()),
-                             next_vertex.get_edges(), next_vertex.get_parent_vertex(), edge.get_edge_name(),
-                             current_vertex.get_depth(),
-                             current_vertex.get_cost() + step_cost(current_vertex, edge, next_vertex))
-        return next_vertex
+        new_next_vertex = Vertex(people_in_next_vertex, State(next_vertex_name, current_state.get_required_vertexes()),
+                                 next_vertex.get_edges(), next_vertex.get_parent_vertex(), edge.get_edge_name(),
+                                 current_vertex.get_depth(),
+                                 current_vertex.get_cost() + step_cost(current_vertex, edge, next_vertex))
+        return new_next_vertex
 
     @staticmethod
     def __print_vertex(vertex: Vertex):

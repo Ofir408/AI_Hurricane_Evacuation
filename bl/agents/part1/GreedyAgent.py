@@ -4,7 +4,7 @@ from collections import deque
 from typing import Tuple
 
 from bl.agents.IAgent import IAgent
-from bl.tree_search.UniformCostSearch import UniformCostSearch
+from bl.agents.tree_search.UniformCostSearch import UniformCostSearch
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.Edge import Edge
 from data_structures.State import State

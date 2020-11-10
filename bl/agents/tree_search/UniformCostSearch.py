@@ -1,4 +1,4 @@
-from bl.tree_search.IGeneralTreeSearch import IGeneralTreeSearch
+from bl.agents.tree_search.IGeneralTreeSearch import IGeneralTreeSearch
 from data_structures.Edge import Edge
 from data_structures.Vertex import Vertex
 

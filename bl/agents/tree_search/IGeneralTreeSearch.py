@@ -1,9 +1,8 @@
 import copy
 from abc import ABC
-from operator import itemgetter
 from typing import List, Tuple, Union
 
-from bl.ICostCalculator import ICostCalculator
+from bl.agents.ICostCalculator import ICostCalculator
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.State import State
 from data_structures.Vertex import Vertex
@@ -26,7 +25,7 @@ class IGeneralTreeSearch(ICostCalculator, ABC):
                 print("goal was found!")
                 fringe.clear()
                 return node
-            for edge_name, vertex in self.__successor_func(node, backup_env_conf):
+            for edge_name, vertex in sorted(self.__successor_func(node, backup_env_conf)):
                 self.__insert_to_fringe(fringe, vertex, vertex.get_cost())
         return IGeneralTreeSearch.NO_PATH
 
@@ -52,10 +51,10 @@ class IGeneralTreeSearch(ICostCalculator, ABC):
         names_of_edges = [edge.get_edge_name() for edge in edges_list]
         edge_to_next_state_list = []
         for edge_name in names_of_edges:
-            next_vertex = EnvironmentUtils.get_next_vertex(current_state, edge_name, self.step_cost, env_conf)
-            next_vertex_current_cost = env_conf.get_vertexes()[next_vertex.get_vertex_name()].get_cost()
-            if next_vertex_current_cost == 0 or next_vertex.get_cost() < next_vertex_current_cost:
-                env_conf.get_vertexes()[next_vertex.get_vertex_name()] = next_vertex
+            next_vertex = EnvironmentUtils.get_next_vertex(node, edge_name, self.step_cost, env_conf)
+            #next_vertex_current_cost = env_conf.get_vertexes()[next_vertex.get_vertex_name()].get_cost()
+            #if next_vertex_current_cost == 0 or next_vertex.get_cost() < next_vertex_current_cost:
+            env_conf.get_vertexes()[next_vertex.get_vertex_name()] = next_vertex
             edge_to_next_state_list.append((edge_name, next_vertex))
         return edge_to_next_state_list
 
@@ -69,14 +68,24 @@ class IGeneralTreeSearch(ICostCalculator, ABC):
 
     def __insert_to_fringe(self, fringe: List, key, priority):
         to_insert = True
-        for k, _ in fringe:
-            if key == k:
+        for k, p in fringe:
+            if key == k and p > priority:
                 to_insert = False
         if to_insert:
             fringe.append((key, priority))
 
     def __pop_from_fringe(self, fringe: List):
-        fringe.sort(key=itemgetter(1)) # todo: add sort by ab-order
+        fringe.sort(key=lambda x: (x[1], x[0].get_vertex_name()))
+
+        print("------------------------------------------")
+
+        for f in fringe:
+            print("priority= ", f[1], " vertex: ", f[0].get_vertex_name())
+
         top_element = fringe[0]
+        if top_element[0].get_vertex_name() and len(fringe) == 5:
+            print("here")
+        print("poped: ", top_element[0].get_vertex_name())
+        print("------------------------------------------")
         fringe.remove(top_element)
         return top_element

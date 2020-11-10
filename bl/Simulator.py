@@ -37,7 +37,9 @@ class Simulator:
         return states[agent_num], env_conf
 
     def update_func(self, agent: IAgent, action: str, current_state: State, env_conf: EnvironmentConfiguration):
-        new_state = EnvironmentUtils.get_next_vertex(current_state, action, agent.step_cost, env_conf).get_state()
+        vertex = env_conf.get_vertexes()[current_state.get_current_vertex_name()]
+        vertex.set_state(current_state)
+        new_state = EnvironmentUtils.get_next_vertex(vertex, action, agent.step_cost, env_conf).get_state()
         new_state.set_visited_vertex(new_state.get_current_vertex_name())
         return new_state
 

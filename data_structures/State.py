@@ -8,12 +8,13 @@ class State:
     2) current vertex name.
     """
 
-    def __init__(self, current_vertex_name: str, required_vertexes: Dict[str, int] = None):
+    def __init__(self, current_vertex_name: str, required_vertexes: Dict[str, bool] = None):
         self.__current_vertex = current_vertex_name
         self.__required_vertexes = required_vertexes
 
     def set_visited_vertex(self, vertex_name: str):
-        self.__required_vertexes[vertex_name] = True
+        if vertex_name in self.__required_vertexes:
+            self.__required_vertexes[vertex_name] = True
 
     def set_required_vertexes(self, require_vertexes):
         self.__required_vertexes = require_vertexes

@@ -1,6 +1,6 @@
 import copy
 from abc import ABC
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 from bl.agents.ICostCalculator import ICostCalculator
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
@@ -10,33 +10,49 @@ from utils.EnvironmentUtils import EnvironmentUtils
 
 
 class IGeneralTreeSearch(ICostCalculator, ABC):
-    NO_PATH = "No Path"
+    SOLUTION_NOT_FOUND = "No Path"
+    SOLUTION_FOUND = "Solution found"
 
-    def search(self, problem: Tuple[State, State, EnvironmentConfiguration], fringe: List) -> Union[Vertex, str]:
+    def __init__(self):
+        self._expansions_num = 0
+        self._was_terminate = False
+
+    def search(self, problem: Tuple[State, State, EnvironmentConfiguration], fringe: List):
         initial_state, goal_state, env_conf = problem
         backup_env_conf = copy.deepcopy(env_conf)
-
         initial_node = self.__make_node(initial_state, backup_env_conf)
-
         self.__insert_to_fringe(fringe, initial_node, 0)
-        while len(fringe) > 0:
+        last_node = None
+        print("search was terminated? ", self._was_terminate)
+        while len(fringe) > 0 and not self._was_terminate:
             node, _ = self.__pop_from_fringe(fringe)
-            if self.__goal_test(problem, node.get_state()):
+            last_node = node
+            if self._goal_test(problem, node.get_state()):
                 print("goal was found!")
+                print("Expansions num: ", self._expansions_num)
                 fringe.clear()
-                return node
+                return node, IGeneralTreeSearch.SOLUTION_FOUND
             for edge_name, vertex in sorted(self.__successor_func(node, backup_env_conf)):
                 self.__insert_to_fringe(fringe, vertex, vertex.get_cost())
-        return IGeneralTreeSearch.NO_PATH
+        print("last_node: ", last_node.get_vertex_name())
+        return last_node, IGeneralTreeSearch.SOLUTION_NOT_FOUND  # TODO: continue, regarding the new return value. implement RTA*
 
-    def restore_solution(self, goal_node: Vertex) -> Tuple[List, int]:
+    def restore_solution(self, goal_node: Vertex, env_conf: EnvironmentConfiguration) -> Tuple[List, int]:
         vertexes_path = []
         current_node = goal_node
+        edges = env_conf.get_edges()
+        edges_of_path = []
+        cost = 0
         while current_node is not None:
+            edges_of_path += current_node.get_action() if current_node.get_action() is not None else ""
             vertexes_path.append(copy.deepcopy(current_node))
             current_node = current_node.get_parent_vertex()
         vertexes_path.reverse()
-        return vertexes_path, goal_node.get_cost()
+
+        # calculate the cost to the solution
+        for edge_name in filter(None, edges_of_path):
+            cost += edges[edge_name].get_weight()
+        return vertexes_path, cost
 
     def __expand(self, node: Vertex, env_conf: EnvironmentConfiguration) -> List[Vertex]:
         successors = []
@@ -47,32 +63,33 @@ class IGeneralTreeSearch(ICostCalculator, ABC):
     def __successor_func(self, node: Vertex, env_conf: EnvironmentConfiguration) -> List[Tuple[str, Vertex]]:
         current_state = node.get_state()
         edges_list = EnvironmentUtils.get_possible_moves(current_state, env_conf)
+        self._expansions_num += 1
 
         names_of_edges = [edge.get_edge_name() for edge in edges_list]
         edge_to_next_state_list = []
         for edge_name in names_of_edges:
             next_vertex = EnvironmentUtils.get_next_vertex(node, edge_name, self.step_cost, env_conf)
-            #next_vertex_current_cost = env_conf.get_vertexes()[next_vertex.get_vertex_name()].get_cost()
-            #if next_vertex_current_cost == 0 or next_vertex.get_cost() < next_vertex_current_cost:
             env_conf.get_vertexes()[next_vertex.get_vertex_name()] = next_vertex
             edge_to_next_state_list.append((edge_name, next_vertex))
         return edge_to_next_state_list
 
-    def __goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
+    def _goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
         _, goal_state, _ = problem
         return goal_state == current_state
 
     def __make_node(self, state: State, env_conf: EnvironmentConfiguration):
         name = state.get_current_vertex_name()
-        return env_conf.get_vertexes()[name]
+        vertex = env_conf.get_vertexes()[name]
+        vertex.set_state(state)
+        return vertex
 
     def __insert_to_fringe(self, fringe: List, key, priority):
         to_insert = True
         for k, p in fringe:
-            if key == k and p > priority:
+            if key == k and p < priority:
                 to_insert = False
         if to_insert:
-            fringe.append((key, priority))
+            fringe.append((copy.deepcopy(key), priority))
 
     def __pop_from_fringe(self, fringe: List):
         fringe.sort(key=lambda x: (x[1], x[0].get_vertex_name()))
@@ -83,8 +100,6 @@ class IGeneralTreeSearch(ICostCalculator, ABC):
             print("priority= ", f[1], " vertex: ", f[0].get_vertex_name())
 
         top_element = fringe[0]
-        if top_element[0].get_vertex_name() and len(fringe) == 5:
-            print("here")
         print("poped: ", top_element[0].get_vertex_name())
         print("------------------------------------------")
         fringe.remove(top_element)

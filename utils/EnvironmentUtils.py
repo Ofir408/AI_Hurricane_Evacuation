@@ -1,3 +1,4 @@
+import copy
 from typing import List, Dict, Callable
 
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
@@ -78,14 +79,30 @@ class EnvironmentUtils:
         first_vertex, sec_vertex = edge.get_vertex_names()
         next_vertex_name = first_vertex if sec_vertex == current_vertex_name else sec_vertex
         next_vertex = vertexes_dict[next_vertex_name]
-
+        next_state = State(next_vertex_name, copy.deepcopy(current_state.get_required_vertexes()))
+        if next_vertex_name in current_state.get_required_vertexes():
+            next_state.set_visited_vertex(next_vertex_name)
+        next_vertex.set_state(next_state)
         people_in_next_vertex = next_vertex.get_people_num()
 
-        new_next_vertex = Vertex(people_in_next_vertex, State(next_vertex_name, current_state.get_required_vertexes()),
-                                 next_vertex.get_edges(), next_vertex.get_parent_vertex(), edge.get_edge_name(),
-                                 current_vertex.get_depth(),
-                                 current_vertex.get_cost() + step_cost(current_vertex, edge, next_vertex))
+        new_next_vertex = Vertex(people_in_next_vertex, next_state, next_vertex.get_edges(),
+                                 current_vertex, edge.get_edge_name(), current_vertex.get_depth(),
+                                 EnvironmentUtils.g(current_vertex, env_config) + step_cost(current_vertex, edge, next_vertex))
         return new_next_vertex
+
+    @staticmethod
+    def g(node: Vertex, env_conf: EnvironmentConfiguration) -> int:
+        current_node = copy.deepcopy(node)
+        edges = env_conf.get_edges()
+        edges_of_path = []
+        cost = 0
+        while current_node is not None:
+            edges_of_path += current_node.get_action() if current_node.get_action() is not None else ""
+            current_node = current_node.get_parent_vertex()
+        # calculate the cost to the solution
+        for edge_name in filter(None, edges_of_path):
+            cost += edges[edge_name].get_weight()
+        return cost
 
     @staticmethod
     def __print_vertex(vertex: Vertex):

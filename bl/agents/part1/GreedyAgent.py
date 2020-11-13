@@ -49,10 +49,10 @@ class GreedyAgent(IAgent):
         shortest_path = []
         for vertex_name in sorted(vertexes_for_visit.keys()):
             vertex = env_conf_backup.get_vertexes()[vertex_name]
-            solution_vertex = self.__searcher.search((initial_state, vertex.get_state(), env_conf_backup), [])
+            solution_vertex, _ = self.__searcher.search((initial_state, vertex.get_state(), env_conf_backup), [])
             if solution_vertex.get_cost() < min_cost:
                 min_cost = solution_vertex.get_cost()
-                shortest_path, _ = self.__searcher.restore_solution(solution_vertex)
+                shortest_path, _ = self.__searcher.restore_solution(solution_vertex, env_conf)
         print("path:", [vertex.get_vertex_name() for vertex in shortest_path], "cost: ", min_cost)
         for vertex in shortest_path:
             self.__path_queue.append(vertex)

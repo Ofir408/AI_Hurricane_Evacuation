@@ -2,6 +2,11 @@ from bl.Simulator import Simulator
 from bl.agents.part1.GreedyAgent import GreedyAgent
 from bl.agents.part1.HumanAgent import HumanAgent
 from bl.agents.part1.SaboteurAgent import SaboteurAgent
+from bl.agents.tree_search.AStarSearchAgent import AStarSearchAgent
+from bl.agents.tree_search.GreedySearchAgent import GreedySearchAgent
+from bl.agents.tree_search.IGeneralTreeSearch import IGeneralTreeSearch
+from bl.agents.tree_search.RTAStarSearchAgent import RTAStarSearchAgent
+from bl.agents.tree_search.heuristic_functions.LeftVertexesToVisitFunc import LeftVertexesToVisitFunc
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.State import State
 from utils.EnvironmentUtils import EnvironmentUtils
@@ -29,3 +34,40 @@ class Runner:
         print("--------------------------------------")
         print("Scores:")
         print(scores)
+
+    def search_agents_runner(self, env_config: EnvironmentConfiguration):
+        agents = [AStarSearchAgent(LeftVertexesToVisitFunc()), GreedySearchAgent(LeftVertexesToVisitFunc()),
+                  RTAStarSearchAgent(LeftVertexesToVisitFunc())]
+        chosen_agents = []
+        states = []
+        for i in range(1):
+            agent_num = int(input("Choose Agent: \n 1) AStarSearchAgent\n 2) GreedySearchAgent\n 3) Real Time A*\n"))
+            while agent_num > 4 or agent_num < 1:
+                print("Invalid agent number")
+                agent_num = int(
+                    input("Choose Agent: \n 1) AStarSearchAgent\n 2) GreedySearchAgent\n 3) Real Time A* agent\n"))
+            chosen_agents.append(agents[agent_num - 1])
+            EnvironmentUtils.print_environment(env_config)
+            initial_state_name = input("Choose initial state\n")
+            state = State(initial_state_name, EnvironmentUtils.get_required_vertexes(env_config))
+            state.set_visited_vertex(initial_state_name)
+            states.append(state)
+
+            print("Start searching...")
+            search_agent = agents[agent_num - 1]
+            temp_dict = EnvironmentUtils.get_required_vertexes(env_config)
+            goal_dict = {}
+            for k, v in temp_dict.items():
+                goal_dict[k] = True
+
+            goal_state = State("", goal_dict)
+            initial_state = states[i]
+            problem = (initial_state, goal_state, env_config)
+            search_result, was_solution_found = search_agent.search(problem, [])
+            if was_solution_found == IGeneralTreeSearch.SOLUTION_NOT_FOUND:
+                print("No solution was found")
+                return
+            path, cost = search_agent.restore_solution(search_result, env_config)
+            print("path= ", [vertex.get_vertex_name() for vertex in path])
+            print("cost= ", cost)
+            print("Done!")

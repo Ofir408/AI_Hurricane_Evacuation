@@ -17,6 +17,6 @@ class GreedySearchTree(IGeneralSearchTree):
     def step_cost(self, parent_node: Vertex, action: Edge, new_node: Vertex) -> int:
         return self.__heuristic_func.calc_estimation_from_goal(new_node.get_state(), None)
 
-    def _goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
+    def goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
         _, goal_state, _ = problem
         return goal_state.get_required_vertexes() == current_state.get_required_vertexes()

@@ -11,7 +11,7 @@ from data_structures.State import State
 from data_structures.Vertex import Vertex
 
 
-class GreedyAgent(IAgent):
+class GreedyWeightAgent(IAgent):
 
     def __init__(self):
         super().__init__()

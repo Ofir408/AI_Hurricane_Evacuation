@@ -105,6 +105,15 @@ class EnvironmentUtils:
         return cost
 
     @staticmethod
+    def get_goal_state(env_config: EnvironmentConfiguration) -> State:
+        temp_dict = EnvironmentUtils.get_required_vertexes(env_config)
+        goal_dict = {}
+        for k, v in temp_dict.items():
+            goal_dict[k] = True
+        goal_state = State("", goal_dict)
+        return goal_state
+
+    @staticmethod
     def __print_vertex(vertex: Vertex):
         print(
             EnvironmentUtils._VERTEX_PREFIX + vertex.get_vertex_name() + EnvironmentUtils._SPACE_SEPARATOR

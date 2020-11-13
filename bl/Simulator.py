@@ -21,16 +21,19 @@ class Simulator:
         :return: list of the scores of the agents.
         """
         scores = [0] * len(agents)
+        actions = [[] for _ in range(len(agents))]
         should_terminate = False
 
         while not should_terminate:
             for agent_num, agent in enumerate(agents):
                 percepts = self.__get_percepts(agent_num, states, env_conf)
                 action = agent.get_action(percepts)
+                actions[agent_num] += action
                 new_state = update_func(agent, action, states[agent_num], env_conf)
                 states[agent_num] = new_state
                 scores[agent_num] = performance_func(new_state, env_conf)
                 should_terminate = termination_func(states, agents)
+        print("actions: ", actions)
         return scores
 
     def __get_percepts(self, agent_num, states, env_conf):

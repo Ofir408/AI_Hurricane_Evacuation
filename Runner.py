@@ -1,7 +1,7 @@
 from bl.Simulator import Simulator
-from bl.agents.part1.GreedyAgent import GreedyAgent
-from bl.agents.part1.HumanAgent import HumanAgent
-from bl.agents.part1.SaboteurAgent import SaboteurAgent
+from bl.agents.part2.AStarAgent import AStarAgent
+from bl.agents.part2.GreedyAgent import GreedyAgent
+from bl.agents.part2.RTAStarAgent import RTAStarAgent
 from bl.search_tree.AStarSearchTree import AStarSearchTree
 from bl.search_tree.GreedySearchTree import GreedySearchTree
 from bl.search_tree.IGeneralSearchTree import IGeneralSearchTree
@@ -15,14 +15,15 @@ from utils.EnvironmentUtils import EnvironmentUtils
 class Runner:
 
     def run(self, env_config: EnvironmentConfiguration):
-        agents = [HumanAgent(), GreedyAgent(), SaboteurAgent(env_config.get_vertices_num())]
+        #agents = [HumanAgent(), GreedyAgent(), SaboteurAgent(env_config.get_vertices_num())]
+        agents = [GreedyAgent(), AStarAgent(), RTAStarAgent()]
         chosen_agents = []
         states = []
-        for _ in range(2):
-            agent_num = int(input("Choose Agent: \n 1) Human Agent\n 2) Greedy Agent\n 3) Saboteur agent\n"))
+        for _ in range(1):
+            agent_num = int(input("Choose Agent: \n 1) Greedy Agent\n 2) A* Agent\n 3) RTA* agent\n"))
             while agent_num > 4 or agent_num < 1:
                 print("Invalid agent number")
-                agent_num = input("Choose Agent: \n 1) Human Agent\n 2) Greedy Agent\n 3) Saboteur agent\n")
+                agent_num = input("Choose Agent: \n 1) Greedy Agent\n 2) A* Agent\n 3) RTA* agent\n")
             chosen_agents.append(agents[agent_num - 1])
             EnvironmentUtils.print_environment(env_config)
             initial_state_name = input("Choose initial state\n")
@@ -55,12 +56,7 @@ class Runner:
 
             print("Start searching...")
             search_agent = agents[agent_num - 1]
-            temp_dict = EnvironmentUtils.get_required_vertexes(env_config)
-            goal_dict = {}
-            for k, v in temp_dict.items():
-                goal_dict[k] = True
-
-            goal_state = State("", goal_dict)
+            goal_state = EnvironmentUtils.get_goal_state(env_config)
             initial_state = states[i]
             problem = (initial_state, goal_state, env_config)
             search_result, was_solution_found = search_agent.search(problem, [])

@@ -36,7 +36,7 @@ class RTAStarSearchTree(IGeneralSearchTree):
                 self._was_terminate = True
         return path[len(path)-1], was_solution_found
 
-    def _goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
+    def goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
         _, goal_state, _ = problem
         return goal_state.get_required_vertexes() == current_state.get_required_vertexes()
 

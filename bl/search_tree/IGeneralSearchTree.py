@@ -22,12 +22,13 @@ class IGeneralSearchTree(ICostCalculator, ABC):
         backup_env_conf = copy.deepcopy(env_conf)
         initial_node = self.__make_node(initial_state, backup_env_conf)
         self.__insert_to_fringe(fringe, initial_node, 0)
-        last_node = None
-        print("search was terminated? ", self._was_terminate)
+        last_node = copy.deepcopy(initial_node)
+        self._was_terminate = False
+        self._expansions_num = 0
         while len(fringe) > 0 and not self._was_terminate:
             node, _ = self.__pop_from_fringe(fringe)
             last_node = node
-            if self._goal_test(problem, node.get_state()):
+            if self.goal_test(problem, node.get_state()):
                 print("goal was found!")
                 print("Expansions num: ", self._expansions_num)
                 fringe.clear()
@@ -73,7 +74,7 @@ class IGeneralSearchTree(ICostCalculator, ABC):
             edge_to_next_state_list.append((edge_name, next_vertex))
         return edge_to_next_state_list
 
-    def _goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
+    def goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
         _, goal_state, _ = problem
         return goal_state == current_state
 

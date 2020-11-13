@@ -15,7 +15,7 @@ class AStarSearchTree(IGeneralSearchTree):
         self.__heuristic_func = heuristic_func
         self.__limit = limit
 
-    def _goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
+    def goal_test(self, problem: Tuple[State, State, EnvironmentConfiguration], current_state: State):
         if self._expansions_num >= self.__limit:
             self._was_terminate = True
         _, goal_state, _ = problem

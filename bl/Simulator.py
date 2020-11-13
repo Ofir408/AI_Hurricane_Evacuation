@@ -28,7 +28,7 @@ class Simulator:
             for agent_num, agent in enumerate(agents):
                 percepts = self.__get_percepts(agent_num, states, env_conf)
                 action = agent.get_action(percepts)
-                actions[agent_num] += action
+                actions[agent_num].append(action)
                 new_state = update_func(agent, action, states[agent_num], env_conf)
                 states[agent_num] = new_state
                 scores[agent_num] = performance_func(new_state, env_conf)

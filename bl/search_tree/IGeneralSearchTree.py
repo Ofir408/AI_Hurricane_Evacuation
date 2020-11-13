@@ -20,23 +20,53 @@ class IGeneralSearchTree(ICostCalculator, ABC):
     def search(self, problem: Tuple[State, State, EnvironmentConfiguration], fringe: List):
         initial_state, goal_state, env_conf = problem
         backup_env_conf = copy.deepcopy(env_conf)
+        closed_list = []
         initial_node = self.__make_node(initial_state, backup_env_conf)
         self.__insert_to_fringe(fringe, initial_node, 0)
         last_node = copy.deepcopy(initial_node)
         self._was_terminate = False
+        backup_expansions_num = self._expansions_num
         self._expansions_num = 0
         while len(fringe) > 0 and not self._was_terminate:
             node, _ = self.__pop_from_fringe(fringe)
             last_node = node
             if self.goal_test(problem, node.get_state()):
                 print("goal was found!")
-                print("Expansions num: ", self._expansions_num)
                 fringe.clear()
+                self._expansions_num += backup_expansions_num
+                print("Expansions num: ", self._expansions_num)
                 return node, IGeneralSearchTree.SOLUTION_FOUND
-            for edge_name, vertex in sorted(self.__successor_func(node, backup_env_conf)):
-                self.__insert_to_fringe(fringe, vertex, vertex.get_cost())
+
+            if self.__should_expand(closed_list, node):
+                for edge_name, vertex in sorted(self.__successor_func(node, backup_env_conf)):
+                    self.__insert_to_fringe(fringe, vertex, vertex.get_cost())
+                closed_list.append((copy.deepcopy(node.get_state()), node.get_cost()))
+
         print("last_node: ", last_node.get_vertex_name())
+        self._expansions_num += backup_expansions_num
         return last_node, IGeneralSearchTree.SOLUTION_NOT_FOUND
+
+    # return true if we will expand this node
+    def __should_expand(self, closed_list, current_node: Vertex):
+        current_state = current_node.get_state()
+        current_cost = current_node.get_cost()
+        is_exist = False
+
+        # check if this node is exist in the closed list
+        for element in closed_list:
+            state, cost = element
+            if current_state.get_required_vertexes() == state.get_required_vertexes() and current_state == state:
+                is_exist = True
+        if not is_exist:
+            return True  # this node doesnt exist in the closed list.
+
+        # check if this cost lower than the current cost in the closed list.
+        for element in closed_list:
+            state, cost = element
+            if current_state.get_required_vertexes() == state.get_required_vertexes() and current_state == state:
+                if current_cost < cost:
+                    return True
+        return False
 
     def restore_solution(self, goal_node: Vertex, env_conf: EnvironmentConfiguration) -> Tuple[List, int]:
         vertexes_path = []
@@ -45,7 +75,7 @@ class IGeneralSearchTree(ICostCalculator, ABC):
         edges_of_path = []
         cost = 0
         while current_node is not None:
-            edges_of_path += current_node.get_action() if current_node.get_action() is not None else ""
+            edges_of_path.append(current_node.get_action() if current_node.get_action() is not None else "")
             vertexes_path.append(copy.deepcopy(current_node))
             current_node = current_node.get_parent_vertex()
         vertexes_path.reverse()

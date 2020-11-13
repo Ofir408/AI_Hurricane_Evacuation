@@ -12,7 +12,7 @@ from data_structures.Vertex import Vertex
 
 class RTAStarSearchTree(IGeneralSearchTree):
 
-    def __init__(self, heuristic_func: IHueristicFunc, limit: int = 3):
+    def __init__(self, heuristic_func: IHueristicFunc, limit: int = 10):
         super().__init__()
         self.__heuristic_func = heuristic_func
         self.__limit = limit

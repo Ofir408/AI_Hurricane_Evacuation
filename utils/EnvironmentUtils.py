@@ -97,7 +97,7 @@ class EnvironmentUtils:
         edges_of_path = []
         cost = 0
         while current_node is not None:
-            edges_of_path += current_node.get_action() if current_node.get_action() is not None else ""
+            edges_of_path.append(current_node.get_action() if current_node.get_action() is not None else "")
             current_node = current_node.get_parent_vertex()
         # calculate the cost to the solution
         for edge_name in filter(None, edges_of_path):

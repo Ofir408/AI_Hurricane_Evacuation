@@ -1,6 +1,6 @@
 import copy
 
-from bl.agents.tree_search.heuristic_functions.IHueristicFunc import IHueristicFunc
+from bl.search_tree.heuristic_functions.IHueristicFunc import IHueristicFunc
 from data_structures.State import State
 
 

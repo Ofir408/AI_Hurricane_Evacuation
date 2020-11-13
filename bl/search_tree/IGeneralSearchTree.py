@@ -9,7 +9,7 @@ from data_structures.Vertex import Vertex
 from utils.EnvironmentUtils import EnvironmentUtils
 
 
-class IGeneralTreeSearch(ICostCalculator, ABC):
+class IGeneralSearchTree(ICostCalculator, ABC):
     SOLUTION_NOT_FOUND = "No Path"
     SOLUTION_FOUND = "Solution found"
 
@@ -31,11 +31,11 @@ class IGeneralTreeSearch(ICostCalculator, ABC):
                 print("goal was found!")
                 print("Expansions num: ", self._expansions_num)
                 fringe.clear()
-                return node, IGeneralTreeSearch.SOLUTION_FOUND
+                return node, IGeneralSearchTree.SOLUTION_FOUND
             for edge_name, vertex in sorted(self.__successor_func(node, backup_env_conf)):
                 self.__insert_to_fringe(fringe, vertex, vertex.get_cost())
         print("last_node: ", last_node.get_vertex_name())
-        return last_node, IGeneralTreeSearch.SOLUTION_NOT_FOUND
+        return last_node, IGeneralSearchTree.SOLUTION_NOT_FOUND
 
     def restore_solution(self, goal_node: Vertex, env_conf: EnvironmentConfiguration) -> Tuple[List, int]:
         vertexes_path = []

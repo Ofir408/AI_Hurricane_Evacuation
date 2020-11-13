@@ -1,16 +1,16 @@
 import copy
 from typing import Tuple, List
 
-from bl.agents.tree_search.AStarSearchAgent import AStarSearchAgent
-from bl.agents.tree_search.IGeneralTreeSearch import IGeneralTreeSearch
-from bl.agents.tree_search.heuristic_functions.IHueristicFunc import IHueristicFunc
+from bl.search_tree.AStarSearchTree import AStarSearchTree
+from bl.search_tree.IGeneralSearchTree import IGeneralSearchTree
+from bl.search_tree.heuristic_functions.IHueristicFunc import IHueristicFunc
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.Edge import Edge
 from data_structures.State import State
 from data_structures.Vertex import Vertex
 
 
-class RTAStarSearchAgent(IGeneralTreeSearch):
+class RTAStarSearchTree(IGeneralSearchTree):
 
     def __init__(self, heuristic_func: IHueristicFunc, limit: int = 3):
         super().__init__()
@@ -21,10 +21,10 @@ class RTAStarSearchAgent(IGeneralTreeSearch):
         backup_problem = copy.deepcopy(problem)
         initial_state, goal_state, env_conf = backup_problem
         result = None
-        was_solution_found = IGeneralTreeSearch.SOLUTION_NOT_FOUND
+        was_solution_found = IGeneralSearchTree.SOLUTION_NOT_FOUND
         path = []
         while not self._was_terminate:
-            search_algo = AStarSearchAgent(self.__heuristic_func, self.__limit)
+            search_algo = AStarSearchTree(self.__heuristic_func, self.__limit)
             temp, was_solution_found = search_algo.search(backup_problem, [])
             path.append(temp)
             if result is None:
@@ -32,7 +32,7 @@ class RTAStarSearchAgent(IGeneralTreeSearch):
             temp.set_parent_vertex(result.get_parent_vertex())
             result.set_parent_vertex(copy.deepcopy(temp))
             backup_problem = (temp.get_state(), goal_state, env_conf)
-            if was_solution_found == IGeneralTreeSearch.SOLUTION_FOUND:
+            if was_solution_found == IGeneralSearchTree.SOLUTION_FOUND:
                 self._was_terminate = True
         return path[len(path)-1], was_solution_found
 

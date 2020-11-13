@@ -1,14 +1,14 @@
 from typing import Tuple
 
-from bl.agents.tree_search.IGeneralTreeSearch import IGeneralTreeSearch
-from bl.agents.tree_search.heuristic_functions.IHueristicFunc import IHueristicFunc
+from bl.search_tree.IGeneralSearchTree import IGeneralSearchTree
+from bl.search_tree.heuristic_functions.IHueristicFunc import IHueristicFunc
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.Edge import Edge
 from data_structures.State import State
 from data_structures.Vertex import Vertex
 
 
-class AStarSearchAgent(IGeneralTreeSearch):
+class AStarSearchTree(IGeneralSearchTree):
 
     def __init__(self, heuristic_func: IHueristicFunc, limit: int = 10000):
         super().__init__()

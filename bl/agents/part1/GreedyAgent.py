@@ -4,7 +4,7 @@ from collections import deque
 from typing import Tuple
 
 from bl.agents.IAgent import IAgent
-from bl.agents.tree_search.UniformCostSearch import UniformCostSearch
+from bl.search_tree.UniformCostSearchTree import UniformCostSearchTree
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.Edge import Edge
 from data_structures.State import State
@@ -16,7 +16,7 @@ class GreedyAgent(IAgent):
     def __init__(self):
         super().__init__()
         self.__path_queue = deque()
-        self.__searcher = UniformCostSearch()
+        self.__searcher = UniformCostSearchTree()
 
     def get_action(self, percepts: Tuple[State, EnvironmentConfiguration]) -> str:
         if len(self.__path_queue) == 0:

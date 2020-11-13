@@ -2,11 +2,11 @@ from bl.Simulator import Simulator
 from bl.agents.part1.GreedyAgent import GreedyAgent
 from bl.agents.part1.HumanAgent import HumanAgent
 from bl.agents.part1.SaboteurAgent import SaboteurAgent
-from bl.agents.tree_search.AStarSearchAgent import AStarSearchAgent
-from bl.agents.tree_search.GreedySearchAgent import GreedySearchAgent
-from bl.agents.tree_search.IGeneralTreeSearch import IGeneralTreeSearch
-from bl.agents.tree_search.RTAStarSearchAgent import RTAStarSearchAgent
-from bl.agents.tree_search.heuristic_functions.LeftVertexesToVisitFunc import LeftVertexesToVisitFunc
+from bl.search_tree.AStarSearchTree import AStarSearchTree
+from bl.search_tree.GreedySearchTree import GreedySearchTree
+from bl.search_tree.IGeneralSearchTree import IGeneralSearchTree
+from bl.search_tree.RTAStarSearchTree import RTAStarSearchTree
+from bl.search_tree.heuristic_functions.LeftVertexesToVisitFunc import LeftVertexesToVisitFunc
 from configuration_reader.EnvironmentConfiguration import EnvironmentConfiguration
 from data_structures.State import State
 from utils.EnvironmentUtils import EnvironmentUtils
@@ -36,8 +36,8 @@ class Runner:
         print(scores)
 
     def search_agents_runner(self, env_config: EnvironmentConfiguration):
-        agents = [AStarSearchAgent(LeftVertexesToVisitFunc()), GreedySearchAgent(LeftVertexesToVisitFunc()),
-                  RTAStarSearchAgent(LeftVertexesToVisitFunc())]
+        agents = [AStarSearchTree(LeftVertexesToVisitFunc()), GreedySearchTree(LeftVertexesToVisitFunc()),
+                  RTAStarSearchTree(LeftVertexesToVisitFunc())]
         chosen_agents = []
         states = []
         for i in range(1):
@@ -64,7 +64,7 @@ class Runner:
             initial_state = states[i]
             problem = (initial_state, goal_state, env_config)
             search_result, was_solution_found = search_agent.search(problem, [])
-            if was_solution_found == IGeneralTreeSearch.SOLUTION_NOT_FOUND:
+            if was_solution_found == IGeneralSearchTree.SOLUTION_NOT_FOUND:
                 print("No solution was found")
                 return
             path, cost = search_agent.restore_solution(search_result, env_config)

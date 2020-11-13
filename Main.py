@@ -5,5 +5,6 @@ config_path = "C:/Users/Ofir/PycharmProjects/AI_Hurricane_Evacuation/initial_con
 configuration_reader = ConfigurationReader()
 config = configuration_reader.read_configuration(config_path)
 runner = Runner()
-#runner.run(config) # part1
-runner.search_agents_runner(config) # part2
+
+runner.run(config) # part1
+#runner.search_agents_runner(config) # part2

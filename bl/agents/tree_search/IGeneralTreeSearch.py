@@ -35,7 +35,7 @@ class IGeneralTreeSearch(ICostCalculator, ABC):
             for edge_name, vertex in sorted(self.__successor_func(node, backup_env_conf)):
                 self.__insert_to_fringe(fringe, vertex, vertex.get_cost())
         print("last_node: ", last_node.get_vertex_name())
-        return last_node, IGeneralTreeSearch.SOLUTION_NOT_FOUND  # TODO: continue, regarding the new return value. implement RTA*
+        return last_node, IGeneralTreeSearch.SOLUTION_NOT_FOUND
 
     def restore_solution(self, goal_node: Vertex, env_conf: EnvironmentConfiguration) -> Tuple[List, int]:
         vertexes_path = []

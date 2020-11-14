@@ -117,15 +117,10 @@ class IGeneralSearchTree(ICostCalculator, ABC):
         return vertex
 
     def __insert_to_fringe(self, fringe: List, key, priority):
-        to_insert = True
-        for k, p in fringe:
-            if key == k and p < priority:
-                to_insert = False
-        if to_insert:
-            fringe.append((copy.deepcopy(key), priority))
+        fringe.append((copy.deepcopy(key), priority))
 
     def __pop_from_fringe(self, fringe: List):
-        fringe.sort(key=lambda x: (x[1], x[0].get_vertex_name()))
+        fringe.sort(key=lambda x: (x[1], int(x[0].get_vertex_name())))
         print("------------------------------------------")
         for f in fringe:
             print("priority= ", f[1], " vertex: ", f[0].get_vertex_name())

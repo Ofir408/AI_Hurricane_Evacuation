@@ -55,7 +55,7 @@ class SaboteurAgent(IAgent):
     # Return Tuple[edge:Edge, was_edge_found:bool]
     def __get_lowest_cost_edge_adjacent(self, current_state: State, env_conf: EnvironmentConfiguration):
         edges = EnvironmentUtils.get_possible_moves(current_state, env_conf)
-        edges.sort(key=lambda edge: (edge.get_weight(), edge.get_edge_name()))
+        edges.sort(key=lambda edge: (edge.get_weight(), int(edge.get_edge_name())))
         if edges:
             return edges[0], True
         else:

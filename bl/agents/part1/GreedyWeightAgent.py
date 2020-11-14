@@ -47,7 +47,8 @@ class GreedyWeightAgent(IAgent):
         env_conf_backup = copy.deepcopy(env_conf)
         min_cost = sys.maxsize
         shortest_path = []
-        for vertex_name in sorted(vertexes_for_visit.keys()):
+
+        for vertex_name in sorted(vertexes_for_visit.keys(), key=lambda v: int(v)):
             vertex = env_conf_backup.get_vertexes()[vertex_name]
             solution_vertex, _ = self.__searcher.search((initial_state, vertex.get_state(), env_conf_backup), [])
             if solution_vertex.get_cost() < min_cost:

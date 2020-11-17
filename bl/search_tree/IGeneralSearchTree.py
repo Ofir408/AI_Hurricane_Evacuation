@@ -48,7 +48,6 @@ class IGeneralSearchTree(ICostCalculator, ABC):
 
     # return true if we will expand this node
     def __should_expand(self, closed_list, current_node: Vertex):
-        print("closed_list size: ", len(closed_list))
         current_state = current_node.get_state()
         current_cost = current_node.get_cost()
         is_exist = False
@@ -113,7 +112,7 @@ class IGeneralSearchTree(ICostCalculator, ABC):
         name = state.get_current_vertex_name()
         vertex = env_conf.get_vertexes()[name]
         vertex.set_state(state)
-        vertex.set_cost(len(state.get_required_vertexes()))
+        vertex.set_cost(len(state.get_required_vertexes()) - sum(state.get_required_vertexes().values()))
         return vertex
 
     def __insert_to_fringe(self, fringe: List, key, priority):
@@ -121,11 +120,6 @@ class IGeneralSearchTree(ICostCalculator, ABC):
 
     def __pop_from_fringe(self, fringe: List):
         fringe.sort(key=lambda x: (x[1], int(x[0].get_vertex_name())))
-        print("------------------------------------------")
-        for f in fringe:
-            print("priority= ", f[1], " vertex: ", f[0].get_vertex_name())
         top_element = fringe[0]
-        print("poped: ", top_element[0].get_vertex_name())
-        print("------------------------------------------")
         fringe.remove(top_element)
         return top_element

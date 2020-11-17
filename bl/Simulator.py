@@ -34,6 +34,11 @@ class Simulator:
                 scores[agent_num] = performance_func(new_state, env_conf)
                 should_terminate = termination_func(states, agents)
         print("actions: ", actions)
+
+        cost = 0
+        for action in actions[0]:
+            cost += env_conf.get_edges()[action].get_weight()
+        print("cost= ", cost)
         return scores
 
     def __get_percepts(self, agent_num, states, env_conf):

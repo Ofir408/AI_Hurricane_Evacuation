@@ -49,7 +49,9 @@ class Simulator:
         new_state = EnvironmentUtils.get_next_vertex(vertex, action, agent.step_cost, env_conf).get_state()
         new_state.set_visited_vertex(new_state.get_current_vertex_name())
         costs, agent_num = costs_info
-        costs[agent_num] += env_conf.get_edges()[action].get_weight()
+        edges_dict = env_conf.get_edges()
+        if action in edges_dict.keys():
+            costs[agent_num] += edges_dict[action].get_weight()
         return new_state
 
     def performance_func(self, new_state: State, traveled_states, env_config: EnvironmentConfiguration):

@@ -13,8 +13,9 @@ class SaboteurAgent(IAgent):
     BLOCK = "BLOCK"
     TRAVERSE = "TRAVERSE"
 
-    def __init__(self, vertexes_num):
+    def __init__(self):
         super().__init__()
+        vertexes_num = int(input("Enter vertexes num (V no ops) for saboteur agent\n"))
         self.__operations = [SaboteurAgent.NO_OPS] * vertexes_num + [SaboteurAgent.BLOCK, SaboteurAgent.TRAVERSE]
         self.__operation_inx = 0
 
@@ -32,7 +33,7 @@ class SaboteurAgent(IAgent):
             edge, is_exist = self.__get_lowest_cost_edge_adjacent(current_state, env_conf)
             if is_exist:
                 self.__block_edge(edge.get_edge_name(), env_conf)
-            return SaboteurAgent.NO_OPS
+            return SaboteurAgent.BLOCK
         else:
             # traverses a lowest-cost remaining edge
             edge, is_exist = self.__get_lowest_cost_edge_adjacent(current_state, env_conf)

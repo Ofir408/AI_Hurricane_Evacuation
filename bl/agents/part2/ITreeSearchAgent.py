@@ -41,8 +41,6 @@ class ITreeSearchAgent(IAgent, ABC):
         initial_state, env_config = percepts
         goal_state = EnvironmentUtils.get_goal_state(env_config)
         solution_vertex, was_path_found = self._search_tree_algo.search((initial_state, goal_state, env_config), [])
-        if was_path_found == IGeneralSearchTree.SOLUTION_NOT_FOUND:
-            print("Solution was not found")
         vertexes_path, cost = self._search_tree_algo.restore_solution(solution_vertex, env_config)
         return vertexes_path
 

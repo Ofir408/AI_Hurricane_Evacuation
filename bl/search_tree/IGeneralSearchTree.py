@@ -31,10 +31,8 @@ class IGeneralSearchTree(ICostCalculator, ABC):
             node, _ = self.__pop_from_fringe(fringe)
             last_node = node
             if self.goal_test(problem, node.get_state()):
-                print("goal was found!")
                 fringe.clear()
                 self._expansions_num += backup_expansions_num
-                print("Expansions num: ", self._expansions_num)
                 return node, IGeneralSearchTree.SOLUTION_FOUND
 
             if self.__should_expand(closed_list, node):
@@ -42,7 +40,6 @@ class IGeneralSearchTree(ICostCalculator, ABC):
                     self.__insert_to_fringe(fringe, vertex, vertex.get_cost())
                 closed_list.append((copy.deepcopy(node.get_state()), node.get_cost()))
 
-        print("last_node: ", last_node.get_vertex_name())
         self._expansions_num += backup_expansions_num
         return last_node, IGeneralSearchTree.SOLUTION_NOT_FOUND
 
